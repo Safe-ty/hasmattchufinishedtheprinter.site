@@ -189,3 +189,67 @@ h4 {
   text-align: center;
   font-size: 10px;
 }
+
+/* Mode toggle buttons */
+.mode-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.mode-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f2f2f7;
+  padding: 6px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.mode-btn:first-child {
+  border-radius: 20px 0 0 20px;
+}
+.mode-btn:last-child {
+  border-radius: 0 20px 20px 0;
+}
+.mode-btn + .mode-btn {
+  border-left: none;
+}
+.mode-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.mode-btn.active {
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 700;
+}
+
+/* Light mode overrides */
+body.light-mode {
+  background: #f2f2f7;
+  color: #1a1a1a;
+}
+body.light-mode .card {
+  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.05);
+}
+body.light-mode .person,
+body.light-mode .vendor {
+  border-color: #ccc;
+}
+body.light-mode .substatus {
+  color: #666;
+}
+body.light-mode .mode-btn {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #1a1a1a;
+}
+body.light-mode .mode-btn + .mode-btn {
+  border-left: none;
+}
+body.light-mode .mode-btn:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+body.light-mode .mode-btn.active {
+  background: rgba(0, 0, 0, 0.15);
+}

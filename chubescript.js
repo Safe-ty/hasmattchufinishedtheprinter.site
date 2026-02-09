@@ -1,3 +1,62 @@
+// === LIGHT / DARK / DARKNESS MODE TOGGLE ===
+const modeBtns = document.querySelectorAll('.mode-btn');
+let darknessOverlay = null;
+
+function applyMode(mode) {
+  // Reset everything
+  document.body.classList.remove('light-mode', 'darkness-mode');
+  document.body.style.backgroundColor = '';
+  document.body.style.color = '';
+  const darkStyle = document.getElementById('darkness-style');
+  if (darkStyle) darkStyle.remove();
+  if (darknessOverlay) {
+    darknessOverlay.remove();
+    darknessOverlay = null;
+  }
+
+  if (mode === 'light') {
+    document.body.classList.add('light-mode');
+  } else if (mode === 'darkness') {
+    document.body.style.backgroundColor = '#1a1a1a';
+    document.body.style.color = 'white';
+    const style = document.createElement('style');
+    style.id = 'darkness-style';
+    style.textContent = 'body.darkness-mode, body.darkness-mode * { color: white !important; }';
+    document.head.appendChild(style);
+    document.body.classList.add('darkness-mode');
+    darknessOverlay = document.createElement('div');
+    darknessOverlay.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: black;
+      color: red !important;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 9999;
+      font-size: 20px;
+      text-align: center;
+    `;
+    darknessOverlay.textContent = 'the darkness consumes all unfinished printers';
+    document.body.appendChild(darknessOverlay);
+  }
+
+  // Update active button
+  modeBtns.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+
+  localStorage.setItem('siteMode', mode);
+}
+
+// Load saved preference (default to dark)
+applyMode(localStorage.getItem('siteMode') || 'dark');
+
+modeBtns.forEach(btn => {
+  btn.addEventListener('click', () => applyMode(btn.dataset.mode));
+});
+
 // === SHUFFLE PERSON SECTIONS ===
 (function shufflePersonSections() {
   const outergrid = document.querySelector('.outergrid');
@@ -26,6 +85,8 @@ console.log(`
   STATUS: ❌ No
 
   try the konami code ;)
+
+  hint 2: POSITRON
       `, 'color: #ff6b6b; font-family: monospace;');
 
 // 2. Konami Code
@@ -148,8 +209,6 @@ if (blameCard && blameCounter) {
 const title = document.querySelector('h1');
 let titleClicks = 0;
 let titleClickTimer;
-let darknessActive = false;
-let darknessOverlay = null;
 if (title) {
   title.style.cursor = 'pointer';
   title.addEventListener('click', () => {
@@ -158,35 +217,8 @@ if (title) {
     titleClickTimer = setTimeout(() => titleClicks = 0, 500);
     if (titleClicks >= 3) {
       titleClicks = 0;
-      if (darknessActive) {
-        // Turn off darkness
-        document.body.style.filter = '';
-        if (darknessOverlay) {
-          darknessOverlay.remove();
-          darknessOverlay = null;
-        }
-        darknessActive = false;
-      } else {
-        // Turn on darkness
-        document.body.style.filter = 'invert(1)';
-        darknessOverlay = document.createElement('div');
-        darknessOverlay.style.cssText = `
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: black;
-          color: red;
-          padding: 20px;
-          border-radius: 10px;
-          z-index: 9999;
-          font-size: 20px;
-          text-align: center;
-        `;
-        darknessOverlay.textContent = 'the darkness consumes all unfinished printers';
-        document.body.appendChild(darknessOverlay);
-        darknessActive = true;
-      }
+      const current = localStorage.getItem('siteMode') || 'dark';
+      applyMode(current === 'darkness' ? 'dark' : 'darkness');
     }
   });
 }
@@ -367,4 +399,43 @@ function activatePositronMode() {
     document.body.style.transform = 'rotate(180deg)';
     positronActive = true;
   }
+}
+
+// 12. Nomad can solder...?
+function activateNomadFluxMode() {
+  const overlay = document.createElement('div');
+  overlay.id = 'nomadflux-overlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url('images/flux.png') center center no-repeat;
+    background-size: contain;
+    z-index: 99999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  `;
+  document.body.appendChild(overlay);
+
+  // Fade in
+  requestAnimationFrame(() => {
+    overlay.style.opacity = '1';
+  });
+
+  // Fade out and remove after 3 seconds
+  setTimeout(() => {
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 300);
+  }, 3000);
+}
+
+const nomadCard = document.getElementById('nomad-section');
+
+if (nomadCard) {
+  nomadCard.addEventListener('click', () => {
+    activateNomadFluxMode();
+  });
 }
